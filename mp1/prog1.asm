@@ -1,4 +1,6 @@
 ;
+;sumuksr2, stancs2
+;
 ; The code given to you here implements the histogram calculation that 
 ; we developed in class.  In programming lab, we will add code that
 ; prints a number in hexadecimal to the monitor.
@@ -87,7 +89,7 @@ MORE_THAN_Z
 	ADD R2,R2,R5		; subtract '`' - '@' from the character
 	BRnz NON_ALPHA		; if <= '`', i.e., < 'a', go increment non-alpha
 	ADD R6,R2,R4		; compare with 'z'
-	BRnz ALPHA		; if <= 'z', go increment alpha count
+	BRnz ALPHA		    ; if <= 'z', go increment alpha count
 	BRnzp NON_ALPHA		; otherwise, go increment non-alpha
 
 GET_NEXT
@@ -104,9 +106,55 @@ PRINT_HIST
 ; for your implementation, list registers used in this part of the code,
 ; and provide sufficient comments
 
+			LD R6, COUNTER		; Setting counter variable
+CHARCHECK	BRnz DONE			; Checking if all 27 printed
+			LD R0, SYMBOLS		; Printing Character
+			OUT					; Printing Character
+			ADD R0, R0, #1		; Going to next Char
+			ST R0, SYMBOLS		; Saving it for next loop
+			LD R0, SPACE		; Loading Space to R0
+			OUT					; Printing space
+			LDI R3, HIST		; Loading in HIST value into R3
+			LD R6, HIST			; Saving current address in R6
+			ADD R6, R6,  #1		; Going to next address
+			ST R6, HIST			; Saving value for next loop
+			AND R5, R5, #0		; initialize -9 value holder
+			ADD R5, R5, #-9		; Setting to -9
+INIT		AND R1, R1, #0		; initialize digit counter
+			ADD R1, R1, #4		; Set digit counter to 4
+DIGCHECK	BRnz FINISH			; Check if 4 digits printed
+			AND R2, R2, #0		; Initialize Digit
+			AND R4, R4, #0		; Initialize Bit Counter
+			ADD R4, R4, #4		; Set bit counter to 4
+BITCHECK	BRnz NEXTDIGIT		; Check if all 4 
+			ADD R2, R2, R2		; Left shift the digit
+			ADD R3, R3, #0		; Making sure branch checks R3
+			BRzp ZEROPOS		; Check if negative
+			ADD R2, R2, #1		; Adding 1
+ZEROPOS		ADD R3, R3, R3		; Shifting R3 left
+			ADD R4, R4,  #-1	; Decrementing Bit Counter
+			BRnzp BITCHECK		; Looping back to Bitcheck
+NEXTDIGIT	ADD R6, R2, R5		; Making sure to check digit
+			BRnz PRINT_ZERO		; If it is <= 9
+			LD R6, A_VAL		; Loads character A
+			ADD R0, R6, #-10	; Doing 'A' - 10
+			ADD R0, R0, R2		; Adding digit to it
+			BRnzp PRINT			; Force skip next line
+PRINT_ZERO	LD R0, ZERO			; Loads character 0
+			ADD R0, R0, R2		; Adding digit to it
+PRINT		OUT					; Printing appropriate value
+			ADD R1, R1, #-1		; Decrementing digit counter
+			BRnzp DIGCHECK		; Send back to loop
+FINISH		LD R6, COUNTER		; Loading counter variable
+			ADD R6, R6, #-1		; Decrementing Char Count
+			ST R6, COUNTER		; Saving counter value
+			BRnz CHARCHECK		; Looping back for next char
+			LD R0, NEW_LINE		; Getting value of new line
+			OUT					; Printing new line
+			LD R6, COUNTER		; To setcc
+			BRnzp CHARCHECK		; looping back
 
-
-DONE	HALT			; done
+DONE		HALT				; done
 
 
 ; the data needed by the program
@@ -116,6 +164,14 @@ AT_MIN_Z	.FILL xFFE6	; the difference between ASCII '@' and 'Z'
 AT_MIN_BQ	.FILL xFFE0	; the difference between ASCII '@' and '`'
 HIST_ADDR	.FILL x3F00     ; histogram starting address
 STR_START	.FILL x4000	; string starting address
+
+ZERO		.FILL	x30			; value of 0
+A_VAL		.FILL	x41			; value of A
+NEW_LINE	.FILL	X0A			; value of new line
+SPACE		.FILL	x20			; value of space
+HIST		.FILL	x3F00		; start of Histogram
+SYMBOLS		.FILL	x40			; value of @ symbol
+COUNTER		.FILL	x1B			; Counter for char
 
 ; for testing, you can use the lines below to include the string in this
 ; program...
