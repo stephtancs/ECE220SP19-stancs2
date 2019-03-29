@@ -14,7 +14,17 @@ game * make_game(int rows, int cols)
     mygame->cells = malloc(rows*cols*sizeof(cell));
 
     //YOUR CODE STARTS HERE:  Initialize all other variables in game struct
+    
 
+    //sets pointers to given size
+    mygame->rows = rows;
+    mygame->cols = cols;
+    mygame->score = 0;
+
+    //initializes
+    for(int i = 0; i < (rows*cols); i++){
+      *(mygame->cells +i)= -1;
+    }
 
     return mygame;
 }
@@ -33,6 +43,17 @@ void remake_game(game ** _cur_game_ptr,int new_rows,int new_cols)
 
 	 //YOUR CODE STARTS HERE:  Re-initialize all other variables in game struct
 
+
+	//reassigns pointers to new size
+	(*_cur_game_ptr)->rows = new_rows;
+	(*_cur_game_ptr)->cols = new_cols;
+	(*_cur_game_ptr)->score = -1;
+
+	//initializes
+	for(int i = 0; i < (new_rows*new_cols); i++){
+	  *((*_cur_game_ptr)->cells)= -1;
+	}
+	
 	return;	
 }
 
@@ -55,6 +76,13 @@ cell * get_cell(game * cur_game, int row, int col)
 {
     //YOUR CODE STARTS HERE
 
+    //rn+c
+
+  int rows = cur_game->rows;
+  if(cur_game->rows > row && cur_game->cols > col){
+    return (cur_game->cells)+((row-1)*rows + col);
+  }
+
     return NULL;
 }
 
@@ -68,7 +96,43 @@ int move_w(game * cur_game)
 {
     //YOUR CODE STARTS HERE
 
+  //i genuinely thought this was going to work but it really does nothing
+
+  int rows = cur_game->rows;
+  int cols = cur_game->cols;
+
+  for(int i = 0; i < cols; i++){
+    for(int j = 1; j < rows-1; j++){
+      if (get_cell(cur_game, j, i) == -1) {
+	for (int k = j; k < rows; j++) {
+	  if (get_cell(cur_game, k, i) != -1) {
+	    *(cur_game->cells + (j * rows) + i) = *(cur_game->cells + (k * rows) + i);
+	    *(cur_game->cells + (k * rows) + i) = -1;
+	  }
+	}
+      }
+    }
+  }
+
+  for(int i = 0; i < cols; i++){
+    for(int j = 0; j < rows; j++){
+      if(( *(cur_game->cells + (j * rows) + i) != -1)&&( *(cur_game->cells + (j * rows) + i)==  *(cur_game->cells + ((j+1) * rows) + i) ) ){
+	*(cur_game->cells + (j * rows) + i) *=2;
+	*(cur_game->cells + ((j+1) * rows) + i) = -1;
+	 if (get_cell(cur_game, j, i) != -1) {
+	   for (int k = j; k < rows; j++) {
+	     if (get_cell(cur_game, k, i) != -1) {
+	       *(cur_game->cells + (j * rows) + i) = *(cur_game->cells + (k * rows) + i);
+	       *(cur_game->cells + (k * rows) + i) = -1;
+	     }
+	   }
+	 }
+      }
+    }
+  }
+
     return 1;
+
 };
 
 int move_s(game * cur_game) //slide down
@@ -98,8 +162,27 @@ int legal_move_check(game * cur_game)
  */
 {
     //YOUR CODE STARTS HERE
+  int rows = cur_game->rows;
+  int cols = cur_game->cols;
 
-    return 1;
+
+  //loops through the entire function, tests for any negative 1's  and tests at points of equality while also testing for bounds of the game
+  for(int i = 0; i < cols; i++){
+    for(int j = 0; j < rows; j++){
+      if (get_cell(cur_game, j, i) == -1) {
+	return 1;
+      }
+      else if(i>0 && (get_cell(cur_game, j, i) == (get_cell(cur_game, j, i-1))))
+	return 1;
+      else if(i<(cols-1) && (get_cell(cur_game, j, i) == (get_cell(cur_game, j, i+1))))
+	return 1;
+      else if(j>0 && (get_cell(cur_game, j, i) == (get_cell(cur_game, j-1, i))))
+	return 1;
+      else if(j<(rows-1) && (get_cell(cur_game, j, i) == (get_cell(cur_game, j+1, i))))
+	return 1;
+    }
+  }
+  return 0;
 }
 
 
