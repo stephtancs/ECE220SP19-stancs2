@@ -1,0 +1,46 @@
+Compilation Results:
+********************
+
+****** Testing make_game() out of  20 ******
+test - make_game() pointer: Pass [+5]
+test - initialized cells: pass [+10]
+test - rows, cols, and score: pass [+5]
+Grade: 20 / 20
+
+****** Testing get_cell() out of  5 ******
+test - get_cell(): fail. pts for no NULLS [+2/5] 
+Grade: 2 / 5
+
+****** Testing move_d() out of  8 ******
+test - move_d ret: fail - move_d returns the incorrect value
+test - move_d tiles move correctly: pass [+7] 
+Grade: 7 / 8
+
+****** Testing move_a() out of  8 ******
+test - move_a tiles: fail - move_a does not move tiles correctly
+test - move_a ret val + 2nd call: fail
+Grade: 0 / 8
+
+****** Testing move_w() out of  16 ******
+
+****** Testing move_s() out of  8 ******
+test - move_s with merge logic: fail - move_s does not move tiles correctly
+test - move_s ret val + 2nd call: fail
+Grade: 0 / 8
+
+****** Testing legal_move_check() out of  15 ******
+test - legal move check: [+11]
+Grade: 11 / 15
+
+****** Testing remake_game() out of  10 ******
+test - remake game: [+2][+2]
+ test - rm game rows and cols:   [+2]cells not reinitialized.
+Grade: 6 / 10
+
+Grade:
+******
+Late submission: 0
+Functionality: 62
+Comments and Style: 5
+Intro paragraph: 5
+Total: 72
