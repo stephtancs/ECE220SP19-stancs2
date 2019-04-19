@@ -14,10 +14,10 @@ maze_t * createMaze(char * fileName)
 {
   FILE *file = fopen(fileName, "r");
   
-  int row = fgetc(file);
-  printf("%i", row);
-  int col = fgetc(file);
-  printf("%i", col);
+  
+ 
+  char  col = fgetc(file);
+  
 
   // maze_t maze = {
     return NULL;
